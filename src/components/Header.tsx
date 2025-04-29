@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Car, User, CircleParking, CircleDollarSign, CircleInfo } from 'lucide-react';
+import { Menu, X, Car, User, CircleParking, CircleDollarSign, CircleHelp } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {

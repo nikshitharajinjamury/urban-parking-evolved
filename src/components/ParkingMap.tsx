@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, Car, CircleInfo, CircleDollarSign, IndianRupee } from 'lucide-react';
+import { MapPin, Navigation, Car, CircleHelp, CircleDollarSign, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Mock data for parking locations with specific spots
@@ -208,7 +207,7 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
                   <span>2.3 miles away</span>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${selectedLocation.available > 10 ? 'bg-green-100 text-green-800' : selectedLocation.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                  <div className={`px-2 py-0.5 bg-brand-soft-purple text-xs rounded-full ${selectedLocation.available > 10 ? 'bg-green-100 text-green-800' : selectedLocation.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                     {selectedLocation.available > 0 ? `${selectedLocation.available} spots left` : 'No spots available'}
                   </div>
                   <div className="text-sm font-medium flex items-center">
@@ -244,7 +243,7 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
                 <div className="flex flex-wrap gap-1">
                   {selectedLocation.features.map((feature, index) => (
                     <span key={index} className="px-2 py-0.5 bg-gray-100 text-xs rounded-full flex items-center gap-1">
-                      <CircleInfo className="h-3 w-3" />
+                      <CircleHelp className="h-3 w-3" />
                       {feature}
                     </span>
                   ))}
