@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, Car } from 'lucide-react';
+import { MapPin, Navigation, Car, CircleInfo, CircleDollarSign, IndianRupee } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Mock data for parking locations with specific spots
 const PARKING_LOCATIONS = [
@@ -11,8 +12,9 @@ const PARKING_LOCATIONS = [
     lng: 25, 
     available: 15, 
     total: 50, 
-    pricePerHour: 399, 
-    spotNames: ["A-Block", "B-Block", "Premium", "Reserved", "VIP"]
+    pricePerHour: 40, 
+    spotNames: ["A-Block", "B-Block", "Premium", "Reserved", "VIP"],
+    features: ["CCTV", "24/7 Security", "Covered Parking"]
   },
   { 
     id: 2, 
@@ -21,8 +23,9 @@ const PARKING_LOCATIONS = [
     lng: 60, 
     available: 8, 
     total: 100, 
-    pricePerHour: 299, 
-    spotNames: ["Level-1", "Level-2", "Premium", "Executive"]
+    pricePerHour: 30, 
+    spotNames: ["Level-1", "Level-2", "Premium", "Executive"],
+    features: ["Car Wash Available", "EV Charging"]
   },
   { 
     id: 3, 
@@ -31,8 +34,9 @@ const PARKING_LOCATIONS = [
     lng: 40, 
     available: 0, 
     total: 30, 
-    pricePerHour: 199, 
-    spotNames: ["East Wing", "West Wing", "South Block"]
+    pricePerHour: 20, 
+    spotNames: ["East Wing", "West Wing", "South Block"],
+    features: ["Open Parking"]
   },
   { 
     id: 4, 
@@ -41,8 +45,9 @@ const PARKING_LOCATIONS = [
     lng: 75, 
     available: 22, 
     total: 75, 
-    pricePerHour: 449, 
-    spotNames: ["Tower-A", "Tower-B", "Tower-C", "Visitor"]
+    pricePerHour: 45, 
+    spotNames: ["Tower-A", "Tower-B", "Tower-C", "Visitor"],
+    features: ["Valet Available", "Car Wash", "Tire Service"]
   },
   { 
     id: 5, 
@@ -51,8 +56,9 @@ const PARKING_LOCATIONS = [
     lng: 70, 
     available: 5, 
     total: 25, 
-    pricePerHour: 349, 
-    spotNames: ["Platform Side", "Exit Side", "Long-term"]
+    pricePerHour: 35, 
+    spotNames: ["Platform Side", "Exit Side", "Long-term"],
+    features: ["Railway Station Access", "Covered Parking"]
   },
   { 
     id: 6, 
@@ -61,8 +67,9 @@ const PARKING_LOCATIONS = [
     lng: 20, 
     available: 45, 
     total: 200, 
-    pricePerHour: 499, 
-    spotNames: ["Terminal-1", "Terminal-2", "Economy", "Premium", "Valet"]
+    pricePerHour: 50, 
+    spotNames: ["Terminal-1", "Terminal-2", "Economy", "Premium", "Valet"],
+    features: ["Shuttle Service", "24/7 Security", "Car Wash"]
   },
 ];
 
@@ -75,6 +82,7 @@ interface ParkingSpot {
   total: number;
   pricePerHour: number;
   spotNames: string[];
+  features: string[];
 }
 
 interface ParkingMapProps {
@@ -108,6 +116,23 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
         <button className="p-2 hover:bg-gray-100 rounded-md" title="Center map on your location">
           <Navigation size={20} className="text-brand-purple" />
         </button>
+      </div>
+      
+      <div className="absolute top-4 right-4 z-10 bg-white rounded-md shadow-md p-2">
+        <div className="flex flex-col space-y-1">
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <span>Available</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <span>Full</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            <span>Your Location</span>
+          </div>
+        </div>
       </div>
       
       {/* This is a simplified map representation. In a real app, you'd use Google Maps, Mapbox, etc. */}
@@ -174,22 +199,38 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
       {/* Selected Location Info */}
       {selectedLocation && (
         <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg p-4 z-30">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-medium text-lg">{selectedLocation.name}</h3>
-              <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
-                <MapPin size={14} />
-                <span>2.3 miles away</span>
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <div className={`px-2 py-1 rounded-full text-xs font-medium ${selectedLocation.available > 10 ? 'bg-green-100 text-green-800' : selectedLocation.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                  {selectedLocation.available > 0 ? `${selectedLocation.available} spots left` : 'No spots available'}
+          <div className="flex flex-col">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-medium text-lg">{selectedLocation.name}</h3>
+                <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                  <MapPin size={14} />
+                  <span>2.3 miles away</span>
                 </div>
-                <div className="text-sm font-medium">₹{selectedLocation.pricePerHour}/hr</div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${selectedLocation.available > 10 ? 'bg-green-100 text-green-800' : selectedLocation.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                    {selectedLocation.available > 0 ? `${selectedLocation.available} spots left` : 'No spots available'}
+                  </div>
+                  <div className="text-sm font-medium flex items-center">
+                    <IndianRupee className="h-3 w-3" />
+                    {selectedLocation.pricePerHour}/hr
+                  </div>
+                </div>
               </div>
-              <div className="mt-2">
-                <p className="text-xs text-muted-foreground">Available in sections:</p>
-                <div className="flex flex-wrap gap-1 mt-1">
+              <div>
+                <Button 
+                  className="bg-brand-purple text-white px-4 py-2 rounded-md hover:bg-brand-secondary-purple transition-colors"
+                  disabled={selectedLocation.available === 0}
+                >
+                  Reserve
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Available in sections:</p>
+                <div className="flex flex-wrap gap-1">
                   {selectedLocation.spotNames.map((spotName, index) => (
                     <span key={index} className="px-2 py-0.5 bg-brand-soft-purple text-xs rounded-full">
                       {spotName}
@@ -197,13 +238,19 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
                   ))}
                 </div>
               </div>
+              
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Features:</p>
+                <div className="flex flex-wrap gap-1">
+                  {selectedLocation.features.map((feature, index) => (
+                    <span key={index} className="px-2 py-0.5 bg-gray-100 text-xs rounded-full flex items-center gap-1">
+                      <CircleInfo className="h-3 w-3" />
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <button 
-              className="bg-brand-purple text-white px-4 py-2 rounded-md hover:bg-brand-secondary-purple transition-colors"
-              disabled={selectedLocation.available === 0}
-            >
-              Reserve
-            </button>
           </div>
         </div>
       )}
