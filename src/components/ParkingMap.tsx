@@ -2,14 +2,68 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, Car } from 'lucide-react';
 
-// Mock data for parking locations
+// Mock data for parking locations with specific spots
 const PARKING_LOCATIONS = [
-  { id: 1, name: "Downtown Garage", lat: 25, lng: 25, available: 15, total: 50, pricePerHour: 4.99 },
-  { id: 2, name: "Central Mall Parking", lat: 35, lng: 60, available: 8, total: 100, pricePerHour: 3.50 },
-  { id: 3, name: "Riverside Lot", lat: 70, lng: 40, available: 0, total: 30, pricePerHour: 2.99 },
-  { id: 4, name: "Tech Park Garage", lat: 60, lng: 75, available: 22, total: 75, pricePerHour: 5.50 },
-  { id: 5, name: "North Station Parking", lat: 15, lng: 70, available: 5, total: 25, pricePerHour: 4.25 },
-  { id: 6, name: "Airport Long-Term", lat: 80, lng: 20, available: 45, total: 200, pricePerHour: 6.00 },
+  { 
+    id: 1, 
+    name: "Downtown Garage", 
+    lat: 25, 
+    lng: 25, 
+    available: 15, 
+    total: 50, 
+    pricePerHour: 399, 
+    spotNames: ["A-Block", "B-Block", "Premium", "Reserved", "VIP"]
+  },
+  { 
+    id: 2, 
+    name: "Central Mall Parking", 
+    lat: 35, 
+    lng: 60, 
+    available: 8, 
+    total: 100, 
+    pricePerHour: 299, 
+    spotNames: ["Level-1", "Level-2", "Premium", "Executive"]
+  },
+  { 
+    id: 3, 
+    name: "Riverside Lot", 
+    lat: 70, 
+    lng: 40, 
+    available: 0, 
+    total: 30, 
+    pricePerHour: 199, 
+    spotNames: ["East Wing", "West Wing", "South Block"]
+  },
+  { 
+    id: 4, 
+    name: "Tech Park Garage", 
+    lat: 60, 
+    lng: 75, 
+    available: 22, 
+    total: 75, 
+    pricePerHour: 449, 
+    spotNames: ["Tower-A", "Tower-B", "Tower-C", "Visitor"]
+  },
+  { 
+    id: 5, 
+    name: "North Station Parking", 
+    lat: 15, 
+    lng: 70, 
+    available: 5, 
+    total: 25, 
+    pricePerHour: 349, 
+    spotNames: ["Platform Side", "Exit Side", "Long-term"]
+  },
+  { 
+    id: 6, 
+    name: "Airport Long-Term", 
+    lat: 80, 
+    lng: 20, 
+    available: 45, 
+    total: 200, 
+    pricePerHour: 499, 
+    spotNames: ["Terminal-1", "Terminal-2", "Economy", "Premium", "Valet"]
+  },
 ];
 
 interface ParkingSpot {
@@ -20,6 +74,7 @@ interface ParkingSpot {
   available: number;
   total: number;
   pricePerHour: number;
+  spotNames: string[];
 }
 
 interface ParkingMapProps {
@@ -126,11 +181,21 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
                 <MapPin size={14} />
                 <span>2.3 miles away</span>
               </div>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${selectedLocation.available > 10 ? 'bg-green-100 text-green-800' : selectedLocation.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                   {selectedLocation.available > 0 ? `${selectedLocation.available} spots left` : 'No spots available'}
                 </div>
-                <div className="text-sm font-medium">${selectedLocation.pricePerHour.toFixed(2)}/hr</div>
+                <div className="text-sm font-medium">₹{selectedLocation.pricePerHour}/hr</div>
+              </div>
+              <div className="mt-2">
+                <p className="text-xs text-muted-foreground">Available in sections:</p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {selectedLocation.spotNames.map((spotName, index) => (
+                    <span key={index} className="px-2 py-0.5 bg-brand-soft-purple text-xs rounded-full">
+                      {spotName}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
             <button 

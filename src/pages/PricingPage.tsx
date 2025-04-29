@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Car, CircleDollarSign, Briefcase } from 'lucide-react';
+import { Check, Car, IndianRupee, Briefcase } from 'lucide-react';
 
 const PricingPage = () => {
   return (
@@ -75,11 +75,11 @@ const PricingPage = () => {
           
           <CardHeader>
             <div className="w-12 h-12 rounded-full bg-brand-soft-purple flex items-center justify-center mb-4">
-              <CircleDollarSign className="h-6 w-6 text-brand-purple" />
+              <IndianRupee className="h-6 w-6 text-brand-purple" />
             </div>
             <CardTitle>Premium</CardTitle>
             <div className="mt-4 flex items-baseline text-gray-900">
-              <span className="text-3xl font-bold tracking-tight">$9.99</span>
+              <span className="text-3xl font-bold tracking-tight">₹799</span>
               <span className="ml-1 text-xl font-semibold text-gray-500">/month</span>
             </div>
             <CardDescription className="mt-2">
@@ -135,7 +135,7 @@ const PricingPage = () => {
             </div>
             <CardTitle>Business</CardTitle>
             <div className="mt-4 flex items-baseline text-gray-900">
-              <span className="text-3xl font-bold tracking-tight">$29.99</span>
+              <span className="text-3xl font-bold tracking-tight">₹2,499</span>
               <span className="ml-1 text-xl font-semibold text-gray-500">/month</span>
             </div>
             <CardDescription className="mt-2">

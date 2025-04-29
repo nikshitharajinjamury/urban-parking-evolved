@@ -27,7 +27,7 @@ const Header = () => {
           <nav className="flex items-center gap-6">
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/map" className="nav-link">Find Parking</Link>
-            <Link to="/reservations" className="nav-link">My Reservations</Link>
+            <Link to="/reservations" className="nav-link">My Booking</Link>
             <Link to="/pricing" className="nav-link">Pricing</Link>
             <Link to="/about" className="nav-link">About</Link>
             <div className="ml-4 flex items-center gap-2">
@@ -52,7 +52,7 @@ const Header = () => {
           <nav className="flex flex-col space-y-2">
             <Link to="/" className="nav-link" onClick={toggleMenu}>Home</Link>
             <Link to="/map" className="nav-link" onClick={toggleMenu}>Find Parking</Link>
-            <Link to="/reservations" className="nav-link" onClick={toggleMenu}>My Reservations</Link>
+            <Link to="/reservations" className="nav-link" onClick={toggleMenu}>My Booking</Link>
             <Link to="/pricing" className="nav-link" onClick={toggleMenu}>Pricing</Link>
             <Link to="/about" className="nav-link" onClick={toggleMenu}>About</Link>
           </nav>

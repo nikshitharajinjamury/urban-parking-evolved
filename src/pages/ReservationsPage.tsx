@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Calendar, Clock, CreditCard, X, ChevronRight } from 'lucide-react';
+import { MapPin, Calendar, Clock, IndianRupee, X, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 // Mock data
@@ -25,12 +25,12 @@ const activeReservations = [
   {
     id: 'res-001',
     location: 'Downtown Garage',
-    spot: 'A-15',
+    spot: 'A-Block',
     date: '2023-06-15',
     startTime: '10:00 AM',
     endTime: '2:00 PM',
     status: 'active',
-    totalPrice: 19.99,
+    totalPrice: 1599,
     qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=RES-001-DOWNTOWN-A15',
   },
 ];
@@ -39,22 +39,22 @@ const pastReservations = [
   {
     id: 'res-002',
     location: 'Central Mall Parking',
-    spot: 'B-22',
+    spot: 'Level-1',
     date: '2023-06-10',
     startTime: '9:00 AM',
     endTime: '11:00 AM',
     status: 'completed',
-    totalPrice: 7.50,
+    totalPrice: 599,
   },
   {
     id: 'res-003',
     location: 'Tech Park Garage',
-    spot: 'C-08',
+    spot: 'Tower-A',
     date: '2023-06-05',
     startTime: '1:00 PM',
     endTime: '4:00 PM',
     status: 'completed',
-    totalPrice: 15.00,
+    totalPrice: 1299,
   },
 ];
 
@@ -65,8 +65,8 @@ const ReservationsPage = () => {
 
   const handleCancelReservation = (reservationId: string) => {
     toast({
-      title: "Reservation Cancelled",
-      description: `Reservation #${reservationId} has been cancelled successfully.`,
+      title: "Booking Cancelled",
+      description: `Booking #${reservationId} has been cancelled successfully.`,
     });
   };
 
@@ -78,7 +78,7 @@ const ReservationsPage = () => {
   return (
     <div className="container py-8 px-4">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">My Reservations</h1>
+        <h1 className="text-3xl font-bold">My Booking</h1>
         <Button asChild>
           <Link to="/map">Find New Parking</Link>
         </Button>
@@ -96,8 +96,8 @@ const ReservationsPage = () => {
               <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center mb-4">
                 <Calendar className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-medium mb-2">No active reservations</h3>
-              <p className="text-muted-foreground mb-6">You don't have any active parking reservations.</p>
+              <h3 className="text-lg font-medium mb-2">No active bookings</h3>
+              <p className="text-muted-foreground mb-6">You don't have any active parking bookings.</p>
               <Button asChild>
                 <Link to="/map">Find Parking</Link>
               </Button>
@@ -145,7 +145,10 @@ const ReservationsPage = () => {
                   <CardFooter className="flex justify-between border-t p-4">
                     <div>
                       <p className="text-sm text-muted-foreground">Total</p>
-                      <p className="font-bold">${reservation.totalPrice.toFixed(2)}</p>
+                      <p className="font-bold flex items-center">
+                        <IndianRupee className="h-3.5 w-3.5" />
+                        {reservation.totalPrice.toFixed(2)}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Button variant="outline" onClick={() => handleCancelReservation(reservation.id)}>
@@ -168,8 +171,8 @@ const ReservationsPage = () => {
               <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center mb-4">
                 <Calendar className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-medium mb-2">No past reservations</h3>
-              <p className="text-muted-foreground">Your reservation history will appear here.</p>
+              <h3 className="text-lg font-medium mb-2">No past bookings</h3>
+              <p className="text-muted-foreground">Your booking history will appear here.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -181,6 +184,7 @@ const ReservationsPage = () => {
                         <h3 className="font-medium">{reservation.location}</h3>
                         <Badge variant="outline" className="text-xs">Completed</Badge>
                       </div>
+                      <p className="text-sm text-muted-foreground">Spot {reservation.spot}</p>
                       <p className="text-sm text-muted-foreground flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {new Date(reservation.date).toLocaleDateString()}
@@ -189,7 +193,10 @@ const ReservationsPage = () => {
                         <Clock className="h-3 w-3" />
                         {reservation.startTime} - {reservation.endTime}
                       </p>
-                      <p className="font-medium mt-1">${reservation.totalPrice.toFixed(2)}</p>
+                      <p className="font-medium mt-1 flex items-center">
+                        <IndianRupee className="h-3.5 w-3.5" />
+                        {reservation.totalPrice.toFixed(2)}
+                      </p>
                     </div>
                     <div className="flex gap-2 sm:flex-col">
                       <Button variant="outline" size="sm" className="w-full sm:w-auto">
