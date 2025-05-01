@@ -101,6 +101,42 @@ export type Database = {
           },
         ]
       }
+      driver_profiles: {
+        Row: {
+          availability: string[] | null
+          created_at: string | null
+          driver_license: string | null
+          experience: string | null
+          id: string
+          status: string | null
+          updated_at: string | null
+          vehicle_model: string | null
+          vehicle_year: string | null
+        }
+        Insert: {
+          availability?: string[] | null
+          created_at?: string | null
+          driver_license?: string | null
+          experience?: string | null
+          id: string
+          status?: string | null
+          updated_at?: string | null
+          vehicle_model?: string | null
+          vehicle_year?: string | null
+        }
+        Update: {
+          availability?: string[] | null
+          created_at?: string | null
+          driver_license?: string | null
+          experience?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          vehicle_model?: string | null
+          vehicle_year?: string | null
+        }
+        Relationships: []
+      }
       parking_locations: {
         Row: {
           address: string
@@ -180,6 +216,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string
+          is_driver: boolean | null
+          last_name: string | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          first_name?: string | null
+          id: string
+          is_driver?: boolean | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          is_driver?: boolean | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       services: {
         Row: {

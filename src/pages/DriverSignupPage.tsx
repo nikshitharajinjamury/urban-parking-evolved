@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Car } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Select,
   SelectContent,
@@ -28,7 +28,7 @@ const DriverSignupPage = () => {
     vehicleModel: '',
     vehicleYear: '',
     experience: '',
-    availability: [],
+    availability: [] as string[],
   });
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -46,7 +46,7 @@ const DriverSignupPage = () => {
 
   const handleAvailabilityChange = (day: string) => {
     setFormData((prev) => {
-      const availability = [...(prev.availability as string[])];
+      const availability = [...(prev.availability)];
       if (availability.includes(day)) {
         return {
           ...prev,
@@ -61,7 +61,7 @@ const DriverSignupPage = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!acceptTerms) {
@@ -84,18 +84,56 @@ const DriverSignupPage = () => {
     
     setIsLoading(true);
 
-    // This is a mock registration - in a real app, you'd connect to a backend
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Mock successful registration
+    try {
+      // Register user in Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            is_driver: true
+          },
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        // Create driver profile
+        const { error: profileError } = await supabase.from('driver_profiles').insert({
+          id: data.user.id,
+          driver_license: formData.driverLicense,
+          vehicle_model: formData.vehicleModel,
+          vehicle_year: formData.vehicleYear,
+          experience: formData.experience,
+          availability: formData.availability
+        });
+
+        if (profileError) {
+          throw profileError;
+        }
+      }
+
       toast({
         title: "Application received",
         description: "Thank you for applying to be a ParkSmart driver! We'll review your application and contact you soon.",
       });
       
       navigate('/');
-    }, 1500);
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "An error occurred during registration",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -261,7 +299,7 @@ const DriverSignupPage = () => {
                   <div key={day} className="flex items-center space-x-2">
                     <Checkbox 
                       id={day} 
-                      checked={(formData.availability as string[]).includes(day)} 
+                      checked={(formData.availability).includes(day)} 
                       onCheckedChange={() => handleAvailabilityChange(day)}
                     />
                     <label

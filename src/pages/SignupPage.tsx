@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Car } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -18,9 +19,16 @@ const SignupPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signUp, signInWithGoogle, user, isLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,7 +38,7 @@ const SignupPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!acceptTerms) {
@@ -42,20 +50,27 @@ const SignupPage = () => {
       return;
     }
     
-    setIsLoading(true);
-
-    // This is a mock registration - in a real app, you'd connect to a backend
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Mock successful registration
-      toast({
-        title: "Account created",
-        description: "Welcome to ParkSmart! Your account has been created successfully.",
-      });
-      
+    try {
+      await signUp(
+        formData.email, 
+        formData.password, 
+        formData.firstName, 
+        formData.lastName
+      );
       navigate('/');
-    }, 1500);
+    } catch (error) {
+      // Error is already handled in the signUp function
+      console.error('Signup error:', error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      // Error is already handled in the signInWithGoogle function
+      console.error('Google sign-in error:', error);
+    }
   };
 
   return (
@@ -176,8 +191,8 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="w-full">
+            <div className="mt-6 grid grid-cols-1 gap-3">
+              <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading}>
                 <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12.0003 4.75C13.7703 4.75 15.3553 5.36002 16.6053 6.54998L20.0303 3.125C17.9502 1.19 15.2353 0 12.0003 0C7.31028 0 3.25527 2.69 1.28027 6.60998L5.27028 9.70498C6.21525 6.86002 8.87028 4.75 12.0003 4.75Z" fill="#EA4335"/>
                   <path d="M23.49 12.275C23.49 11.49 23.415 10.73 23.3 10H12V14.51H18.47C18.18 15.99 17.34 17.25 16.08 18.1L19.945 21.1C22.2 19.01 23.49 15.92 23.49 12.275Z" fill="#4285F4"/>
@@ -185,13 +200,6 @@ const SignupPage = () => {
                   <path d="M12.0004 24C15.2404 24 17.9654 22.935 19.9454 21.095L16.0804 18.095C15.0054 18.82 13.6204 19.245 12.0004 19.245C8.8704 19.245 6.21537 17.135 5.2654 14.29L1.27539 17.385C3.25539 21.31 7.3104 24 12.0004 24Z" fill="#34A853"/>
                 </svg>
                 Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 22 22">
-                  <path d="M16.85 1H5.15C2.86 1 1 2.86 1 5.15v11.7C1 19.14 2.86 21 5.15 21h11.7c2.29 0 4.15-1.86 4.15-4.15V5.15C21 2.86 19.14 1 16.85 1zm3.09 15.85c0 1.7-1.39 3.09-3.09 3.09H5.15c-1.7 0-3.09-1.39-3.09-3.09V5.15c0-1.7 1.39-3.09 3.09-3.09h11.7c1.7 0 3.09 1.39 3.09 3.09v11.7z"/>
-                  <path d="M11 5.88c-2.83 0-5.12 2.29-5.12 5.12S8.17 16.12 11 16.12s5.12-2.29 5.12-5.12S13.83 5.88 11 5.88zm0 8.46c-1.84 0-3.33-1.5-3.33-3.34S9.16 7.66 11 7.66s3.33 1.5 3.33 3.34-1.49 3.34-3.33 3.34zm5.3-9.84c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25z"/>
-                </svg>
-                Apple
               </Button>
             </div>
           </div>
