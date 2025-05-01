@@ -3,6 +3,7 @@ import React from 'react';
 import { Search, Filter, MapPin, Car } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface SearchBarProps {
   searchQuery: string;
@@ -22,18 +23,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery }) =>
         />
       </div>
       
-      <div className="flex flex-wrap gap-2">
-        <Button size="sm" variant="outline" className="flex items-center gap-2">
-          <Filter size={14} />
-          <span>Filters</span>
-        </Button>
-        <Button size="sm" variant="outline" className="flex items-center gap-2">
-          <MapPin size={14} />
-          <span>Near Me</span>
-        </Button>
-        <Button size="sm" variant="outline" className="flex items-center gap-2">
-          <Car size={14} />
-          <span>Vehicle Type</span>
+      <div className="flex flex-wrap gap-2 justify-between">
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <Filter size={14} />
+            <span>Filters</span>
+          </Button>
+          <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <MapPin size={14} />
+            <span>Near Me</span>
+          </Button>
+          <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <Car size={14} />
+            <span>Vehicle Type</span>
+          </Button>
+        </div>
+        
+        <Button size="sm" variant="default" className="bg-brand-purple hover:bg-brand-purple/90" asChild>
+          <Link to="/driver-signup">Become a Valet Driver</Link>
         </Button>
       </div>
     </div>

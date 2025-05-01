@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import MapPage from "./pages/MapPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import DriverSignupPage from "./pages/DriverSignupPage";
 import ReservationsPage from "./pages/ReservationsPage";
 import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/map" element={<MapPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/driver-signup" element={<DriverSignupPage />} />
               <Route path="/reservations" element={<ReservationsPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
