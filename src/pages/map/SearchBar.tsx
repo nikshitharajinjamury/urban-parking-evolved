@@ -29,7 +29,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
     if (inputRef.current) {
       try {
         autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-          types: ['geocode', 'establishment']
+          types: ['geocode', 'establishment'],
+          componentRestrictions: { country: 'in' } // Restrict to India
         });
         
         autocompleteRef.current.addListener('place_changed', () => {
@@ -55,7 +56,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input
           ref={inputRef}
-          placeholder="Search for a location, address, or landmark"
+          placeholder="Search for a location in Hyderabad"
           className="pl-10"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

@@ -1,11 +1,11 @@
 
-// Mock data for parking locations with specific spots
+// Mock data for parking locations with specific spots in Hyderabad, India
 export const PARKING_LOCATIONS = [
   { 
     id: 1, 
-    name: "Downtown Garage", 
-    lat: 37.7749, 
-    lng: -122.4194, 
+    name: "Hitech City Parking Complex", 
+    lat: 17.4435, 
+    lng: 78.3772, 
     available: 15, 
     total: 50, 
     pricePerHour: 40, 
@@ -14,9 +14,9 @@ export const PARKING_LOCATIONS = [
   },
   { 
     id: 2, 
-    name: "Central Mall Parking", 
-    lat: 37.7847, 
-    lng: -122.4100, 
+    name: "Jubilee Hills Mall Parking", 
+    lat: 17.4315, 
+    lng: 78.4069, 
     available: 8, 
     total: 100, 
     pricePerHour: 30, 
@@ -25,9 +25,9 @@ export const PARKING_LOCATIONS = [
   },
   { 
     id: 3, 
-    name: "Riverside Lot", 
-    lat: 37.7935, 
-    lng: -122.3923, 
+    name: "Gachibowli Stadium Parking", 
+    lat: 17.4241, 
+    lng: 78.3497, 
     available: 0, 
     total: 30, 
     pricePerHour: 20, 
@@ -36,9 +36,9 @@ export const PARKING_LOCATIONS = [
   },
   { 
     id: 4, 
-    name: "Tech Park Garage", 
-    lat: 37.7815, 
-    lng: -122.4060, 
+    name: "Banjara Hills Garage", 
+    lat: 17.4176, 
+    lng: 78.4482, 
     available: 22, 
     total: 75, 
     pricePerHour: 45, 

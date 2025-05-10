@@ -22,7 +22,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   markers = [], 
   onMarkerClick, 
   selectedMarkerId,
-  center = { lat: 37.7749, lng: -122.4194 } // Default: San Francisco
+  center = { lat: 17.3850, lng: 78.4867 } // Default: Hyderabad, India
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);

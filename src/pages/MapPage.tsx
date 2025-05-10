@@ -27,7 +27,7 @@ const MapPage = () => {
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'spots' | 'map'>('map'); // Default to map view
   const [tab, setTab] = useState('hourly');
-  const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 }); // Default: San Francisco
+  const [mapCenter, setMapCenter] = useState({ lat: 17.3850, lng: 78.4867 }); // Default: Hyderabad, India
 
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
