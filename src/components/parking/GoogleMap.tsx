@@ -32,7 +32,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   // Initialize the map
   useEffect(() => {
     if (mapRef.current && !googleMapRef.current) {
-      googleMapRef.current = new google.maps.Map(mapRef.current, {
+      googleMapRef.current = new window.google.maps.Map(mapRef.current, {
         center,
         zoom: 14,
         mapTypeControl: false,
@@ -63,11 +63,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             googleMapRef.current?.setCenter(userPos);
             
             // Add user location marker
-            new google.maps.Marker({
+            new window.google.maps.Marker({
               position: userPos,
               map: googleMapRef.current,
               icon: {
-                path: google.maps.SymbolPath.CIRCLE,
+                path: window.google.maps.SymbolPath.CIRCLE,
                 scale: 10,
                 fillColor: '#4285F4',
                 fillOpacity: 0.8,
@@ -101,7 +101,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       
       // Create marker icon based on availability
       const icon = {
-        path: google.maps.SymbolPath.CIRCLE,
+        path: window.google.maps.SymbolPath.CIRCLE,
         scale: isSelected ? 12 : 10,
         fillColor: markerData.available > 0 ? '#10B981' : '#EF4444',
         fillOpacity: 0.8,
@@ -110,7 +110,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       };
 
       // Create the marker
-      const marker = new google.maps.Marker({
+      const marker = new window.google.maps.Marker({
         position: { lat: markerData.lat, lng: markerData.lng },
         map: googleMapRef.current,
         icon,
@@ -118,7 +118,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       });
       
       // Create info window
-      const infoWindow = new google.maps.InfoWindow({
+      const infoWindow = new window.google.maps.InfoWindow({
         content: `
           <div class="p-2">
             <div class="font-bold">${markerData.name}</div>

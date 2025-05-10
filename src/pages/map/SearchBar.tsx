@@ -21,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   useEffect(() => {
     if (inputRef.current && window.google && window.google.maps && window.google.maps.places) {
-      autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current, {
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ['geocode', 'establishment']
       });
       
