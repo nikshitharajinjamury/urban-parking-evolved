@@ -22,7 +22,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   markers = [], 
   onMarkerClick, 
   selectedMarkerId,
-  center = { lat: 12.9716, lng: 77.5946 } // Default: Bangalore
+  center = { lat: 40.712776, lng: -74.005974 } // Default: NYC
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);
@@ -60,7 +60,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               lng: position.coords.longitude
             };
             setUserLocation(userPos);
-            googleMapRef.current?.setCenter(userPos);
+            // Only center on user location if explicitly requested
+            // Instead, we'll focus on our parking locations by default
             
             // Add user location marker
             new window.google.maps.Marker({
@@ -140,6 +141,23 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       // Store the marker reference
       markersRef.current.set(markerData.id, marker);
     });
+
+    // Adjust the map to fit all the markers
+    if (markers.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      markers.forEach((marker) => {
+        bounds.extend({ lat: marker.lat, lng: marker.lng });
+      });
+      googleMapRef.current.fitBounds(bounds);
+      
+      // Don't zoom in too far
+      const listener = window.google.maps.event.addListener(googleMapRef.current, 'idle', function() {
+        if (googleMapRef.current && googleMapRef.current.getZoom() > 16) {
+          googleMapRef.current.setZoom(16);
+        }
+        window.google.maps.event.removeListener(listener);
+      });
+    }
   }, [markers, selectedMarkerId, onMarkerClick]);
 
   return (

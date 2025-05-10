@@ -1,11 +1,10 @@
-
 // Mock data for parking locations with specific spots
 export const PARKING_LOCATIONS = [
   { 
     id: 1, 
     name: "Downtown Garage", 
-    lat: 25, 
-    lng: 25, 
+    lat: 40.712776, 
+    lng: -74.005974, 
     available: 15, 
     total: 50, 
     pricePerHour: 40, 
@@ -15,8 +14,8 @@ export const PARKING_LOCATIONS = [
   { 
     id: 2, 
     name: "Central Mall Parking", 
-    lat: 35, 
-    lng: 60, 
+    lat: 40.715001, 
+    lng: -73.995001, 
     available: 8, 
     total: 100, 
     pricePerHour: 30, 
@@ -26,8 +25,8 @@ export const PARKING_LOCATIONS = [
   { 
     id: 3, 
     name: "Riverside Lot", 
-    lat: 70, 
-    lng: 40, 
+    lat: 40.718001, 
+    lng: -74.010001, 
     available: 0, 
     total: 30, 
     pricePerHour: 20, 
@@ -37,36 +36,14 @@ export const PARKING_LOCATIONS = [
   { 
     id: 4, 
     name: "Tech Park Garage", 
-    lat: 60, 
-    lng: 75, 
+    lat: 40.720001, 
+    lng: -74.000001, 
     available: 22, 
     total: 75, 
     pricePerHour: 45, 
     spotNames: ["Tower-A", "Tower-B", "Tower-C", "Visitor"],
     features: ["Valet Available", "Car Wash", "Tire Service"]
-  },
-  { 
-    id: 5, 
-    name: "North Station Parking", 
-    lat: 15, 
-    lng: 70, 
-    available: 5, 
-    total: 25, 
-    pricePerHour: 35, 
-    spotNames: ["Platform Side", "Exit Side", "Long-term"],
-    features: ["Railway Station Access", "Covered Parking"]
-  },
-  { 
-    id: 6, 
-    name: "Airport Long-Term", 
-    lat: 80, 
-    lng: 20, 
-    available: 45, 
-    total: 200, 
-    pricePerHour: 50, 
-    spotNames: ["Terminal-1", "Terminal-2", "Economy", "Premium", "Valet"],
-    features: ["Shuttle Service", "24/7 Security", "Car Wash"]
-  },
+  }
 ];
 
 export interface ParkingSpot {

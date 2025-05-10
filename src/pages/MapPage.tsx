@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +31,15 @@ const MapPage = () => {
 
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
+    
+    // When a location is selected from the map, automatically populate some fields
+    if (location.spotNames && location.spotNames.length > 0) {
+      // Select a random spot as default
+      const availableSpots = PARKING_SPOTS.filter(spot => spot.available);
+      if (availableSpots.length > 0) {
+        setSelectedSpot(availableSpots[Math.floor(Math.random() * availableSpots.length)]);
+      }
+    }
   };
 
   const handleSpotSelect = (spot: ParkingSpot) => {
@@ -151,7 +159,9 @@ const MapPage = () => {
             </TabsContent>
             
             <TabsContent value="map">
-              <ParkingMap onSelectLocation={handleSelectLocation} />
+              <ParkingMap 
+                onSelectLocation={handleSelectLocation}
+              />
             </TabsContent>
           </Tabs>
         </div>

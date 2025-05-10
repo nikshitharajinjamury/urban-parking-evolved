@@ -17,9 +17,10 @@ interface ParkingSpot {
 
 interface LocationInfoPanelProps {
   location: ParkingSpot;
+  onViewSlots?: () => void;
 }
 
-const LocationInfoPanel: React.FC<LocationInfoPanelProps> = ({ location }) => {
+const LocationInfoPanel: React.FC<LocationInfoPanelProps> = ({ location, onViewSlots }) => {
   return (
     <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg p-4 z-30">
       <div className="flex flex-col">
@@ -31,7 +32,7 @@ const LocationInfoPanel: React.FC<LocationInfoPanelProps> = ({ location }) => {
               <span>2.3 miles away</span>
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <div className={`px-2 py-0.5 bg-brand-soft-purple text-xs rounded-full ${location.available > 10 ? 'bg-green-100 text-green-800' : location.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+              <div className={`px-2 py-0.5 text-xs rounded-full ${location.available > 10 ? 'bg-green-100 text-green-800' : location.available > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                 {location.available > 0 ? `${location.available} spots left` : 'No spots available'}
               </div>
               <div className="text-sm font-medium flex items-center">
@@ -40,9 +41,18 @@ const LocationInfoPanel: React.FC<LocationInfoPanelProps> = ({ location }) => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="space-y-2">
             <Button 
-              className="bg-brand-purple text-white px-4 py-2 rounded-md hover:bg-brand-secondary-purple transition-colors"
+              className="bg-brand-purple text-white w-full hover:bg-brand-secondary-purple transition-colors"
+              disabled={location.available === 0}
+              onClick={onViewSlots}
+            >
+              View Slots
+            </Button>
+            
+            <Button 
+              variant="outline"
+              className="w-full"
               disabled={location.available === 0}
             >
               Reserve
