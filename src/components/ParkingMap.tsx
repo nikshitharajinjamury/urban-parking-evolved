@@ -1,12 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { PARKING_LOCATIONS, ParkingSpot } from './parking/ParkingData';
-import ParkingLocationMarker from './parking/ParkingLocationMarker';
-import UserLocationMarker from './parking/UserLocationMarker';
-import MapLegend from './parking/MapLegend';
+import GoogleMap from './parking/GoogleMap';
 import LocationInfoPanel from './parking/LocationInfoPanel';
-import NavigationControl from './parking/NavigationControl';
-import MapGrid from './parking/MapGrid';
 
 interface ParkingMapProps {
   onSelectLocation?: (location: ParkingSpot) => void;
@@ -14,55 +10,35 @@ interface ParkingMapProps {
 
 const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
   const [selectedLocation, setSelectedLocation] = useState<ParkingSpot | null>(null);
-  const [userLocation, setUserLocation] = useState({ lat: 40, lng: 40 });
   
-  // Simulate getting user's location
-  useEffect(() => {
-    // In a real app, we would use browser geolocation
-    const timer = setTimeout(() => {
-      setUserLocation({ lat: 45, lng: 45 });
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, []);
+  // Format the parking locations data for the GoogleMap component
+  const mapMarkers = PARKING_LOCATIONS.map(location => ({
+    id: location.id,
+    lat: location.lat,
+    lng: location.lng,
+    name: location.name,
+    available: location.available,
+    total: location.total,
+    isSelected: selectedLocation?.id === location.id
+  }));
   
-  const handleLocationClick = (location: ParkingSpot) => {
-    setSelectedLocation(location);
-    if (onSelectLocation) {
-      onSelectLocation(location);
+  const handleMarkerClick = (marker: { id: number }) => {
+    const location = PARKING_LOCATIONS.find(loc => loc.id === marker.id);
+    if (location) {
+      setSelectedLocation(location);
+      if (onSelectLocation) {
+        onSelectLocation(location);
+      }
     }
   };
   
   return (
     <div className="relative bg-gray-100 rounded-lg overflow-hidden shadow-md">
-      <NavigationControl />
-      <MapLegend />
-      
-      {/* This is a simplified map representation. In a real app, you'd use Google Maps, Mapbox, etc. */}
-      <div className="map-container relative bg-white">
-        <MapGrid />
-        
-        {/* User location marker */}
-        <UserLocationMarker lat={userLocation.lat} lng={userLocation.lng} />
-        
-        {/* Parking spots */}
-        {PARKING_LOCATIONS.map((location) => (
-          <ParkingLocationMarker
-            key={location.id}
-            id={location.id}
-            name={location.name}
-            lat={location.lat}
-            lng={location.lng}
-            available={location.available}
-            total={location.total}
-            pricePerHour={location.pricePerHour}
-            spotNames={location.spotNames}
-            features={location.features}
-            isSelected={selectedLocation?.id === location.id}
-            onClick={() => handleLocationClick(location)}
-          />
-        ))}
-      </div>
+      <GoogleMap 
+        markers={mapMarkers}
+        onMarkerClick={handleMarkerClick}
+        selectedMarkerId={selectedLocation?.id}
+      />
       
       {/* Selected Location Info */}
       {selectedLocation && <LocationInfoPanel location={selectedLocation} />}

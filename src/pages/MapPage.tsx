@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -25,8 +26,9 @@ const MapPage = () => {
   const [startTime, setStartTime] = useState('9:00 AM');
   const [selectedSpot, setSelectedSpot] = useState<ParkingSpot | null>(null);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<'spots' | 'map'>('spots');
+  const [viewMode, setViewMode] = useState<'spots' | 'map'>('map'); // Default to map view
   const [tab, setTab] = useState('hourly');
+  const [mapCenter, setMapCenter] = useState({ lat: 12.9716, lng: 77.5946 }); // Default: Bangalore
 
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
@@ -91,13 +93,27 @@ const MapPage = () => {
     return spotType ? spotType.color : 'bg-gray-100 text-gray-800';
   };
 
+  const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
+    if (place.geometry?.location) {
+      const newCenter = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      setMapCenter(newCenter);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Find Parking</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <SearchBar 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery} 
+            onPlaceSelected={handlePlaceSelected}
+          />
           
           <Tabs value={viewMode} onValueChange={(value: string) => setViewMode(value as 'spots' | 'map')}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
