@@ -1,10 +1,11 @@
+
 // Mock data for parking locations with specific spots
 export const PARKING_LOCATIONS = [
   { 
     id: 1, 
     name: "Downtown Garage", 
-    lat: 40.712776, 
-    lng: -74.005974, 
+    lat: 37.7749, 
+    lng: -122.4194, 
     available: 15, 
     total: 50, 
     pricePerHour: 40, 
@@ -14,8 +15,8 @@ export const PARKING_LOCATIONS = [
   { 
     id: 2, 
     name: "Central Mall Parking", 
-    lat: 40.715001, 
-    lng: -73.995001, 
+    lat: 37.7847, 
+    lng: -122.4100, 
     available: 8, 
     total: 100, 
     pricePerHour: 30, 
@@ -25,8 +26,8 @@ export const PARKING_LOCATIONS = [
   { 
     id: 3, 
     name: "Riverside Lot", 
-    lat: 40.718001, 
-    lng: -74.010001, 
+    lat: 37.7935, 
+    lng: -122.3923, 
     available: 0, 
     total: 30, 
     pricePerHour: 20, 
@@ -36,8 +37,8 @@ export const PARKING_LOCATIONS = [
   { 
     id: 4, 
     name: "Tech Park Garage", 
-    lat: 40.720001, 
-    lng: -74.000001, 
+    lat: 37.7815, 
+    lng: -122.4060, 
     available: 22, 
     total: 75, 
     pricePerHour: 45, 

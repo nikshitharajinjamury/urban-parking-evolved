@@ -20,22 +20,32 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   useEffect(() => {
-    if (inputRef.current && window.google && window.google.maps && window.google.maps.places) {
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-        types: ['geocode', 'establishment']
-      });
-      
-      autocompleteRef.current.addListener('place_changed', () => {
-        const place = autocompleteRef.current?.getPlace();
-        if (place && onPlaceSelected) {
-          onPlaceSelected(place);
-          if (place.formatted_address) {
-            setSearchQuery(place.formatted_address);
-          } else if (place.name) {
-            setSearchQuery(place.name);
+    // Make sure Google Maps API has loaded
+    if (!window.google || !window.google.maps || !window.google.maps.places) {
+      console.error("Google Maps Places API not loaded");
+      return;
+    }
+
+    if (inputRef.current) {
+      try {
+        autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
+          types: ['geocode', 'establishment']
+        });
+        
+        autocompleteRef.current.addListener('place_changed', () => {
+          const place = autocompleteRef.current?.getPlace();
+          if (place && onPlaceSelected) {
+            onPlaceSelected(place);
+            if (place.formatted_address) {
+              setSearchQuery(place.formatted_address);
+            } else if (place.name) {
+              setSearchQuery(place.name);
+            }
           }
-        }
-      });
+        });
+      } catch (error) {
+        console.error("Error initializing Google Places Autocomplete:", error);
+      }
     }
   }, [onPlaceSelected, setSearchQuery]);
 

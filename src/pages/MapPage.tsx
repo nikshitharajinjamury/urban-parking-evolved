@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -27,7 +27,7 @@ const MapPage = () => {
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'spots' | 'map'>('map'); // Default to map view
   const [tab, setTab] = useState('hourly');
-  const [mapCenter, setMapCenter] = useState({ lat: 12.9716, lng: 77.5946 }); // Default: Bangalore
+  const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 }); // Default: San Francisco
 
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
@@ -111,6 +111,12 @@ const MapPage = () => {
     }
   };
 
+  // Use useEffect to force map view on initial load
+  useEffect(() => {
+    // Force map view on component mount
+    setViewMode('map');
+  }, []);
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Find Parking</h1>
@@ -125,15 +131,21 @@ const MapPage = () => {
           
           <Tabs value={viewMode} onValueChange={(value: string) => setViewMode(value as 'spots' | 'map')}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="spots" className="flex items-center gap-2">
-                <CircleParking size={16} />
-                Parking Spots
-              </TabsTrigger>
               <TabsTrigger value="map" className="flex items-center gap-2">
                 <MapPin size={16} />
                 Map View
               </TabsTrigger>
+              <TabsTrigger value="spots" className="flex items-center gap-2">
+                <CircleParking size={16} />
+                Parking Spots
+              </TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="map" className="min-h-[500px]">
+              <ParkingMap 
+                onSelectLocation={handleSelectLocation}
+              />
+            </TabsContent>
             
             <TabsContent value="spots" className="space-y-6">
               <SpotSelectionPanel
@@ -156,12 +168,6 @@ const MapPage = () => {
                   toggleService={toggleService}
                 />
               )}
-            </TabsContent>
-            
-            <TabsContent value="map">
-              <ParkingMap 
-                onSelectLocation={handleSelectLocation}
-              />
             </TabsContent>
           </Tabs>
         </div>

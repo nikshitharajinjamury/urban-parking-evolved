@@ -4,12 +4,14 @@ import { PARKING_LOCATIONS, ParkingSpot } from './parking/ParkingData';
 import GoogleMap from './parking/GoogleMap';
 import LocationInfoPanel from './parking/LocationInfoPanel';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 interface ParkingMapProps {
   onSelectLocation?: (location: ParkingSpot) => void;
 }
 
 const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
+  const { toast } = useToast();
   const [selectedLocation, setSelectedLocation] = useState<ParkingSpot | null>(null);
   const [showSlots, setShowSlots] = useState(false);
   
@@ -28,16 +30,26 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
     const location = PARKING_LOCATIONS.find(loc => loc.id === marker.id);
     if (location) {
       setSelectedLocation(location);
-      setShowSlots(true);
       if (onSelectLocation) {
         onSelectLocation(location);
       }
+
+      // Show a toast notification
+      toast({
+        title: location.name,
+        description: `${location.available} of ${location.total} parking spots available`,
+      });
     }
   };
   
   // Close the slots panel
   const handleCloseSlots = () => {
     setShowSlots(false);
+  };
+
+  // Open the slots view
+  const handleViewSlots = () => {
+    setShowSlots(true);
   };
   
   return (
@@ -49,7 +61,7 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
       />
       
       {/* Selected Location Info */}
-      {selectedLocation && <LocationInfoPanel location={selectedLocation} onViewSlots={() => setShowSlots(true)} />}
+      {selectedLocation && <LocationInfoPanel location={selectedLocation} onViewSlots={handleViewSlots} />}
       
       {/* Parking Slots Panel */}
       {showSlots && selectedLocation && (
@@ -78,11 +90,13 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
                       <span className="font-medium">{section}</span>
                     </div>
                     <div className="p-4 grid grid-cols-4 gap-2">
-                      {/* Generate random slots for this section */}
+                      {/* Generate slots for this section */}
                       {Array(5).fill(0).map((_, i) => {
-                        // Randomly determine if a spot is available
-                        const isAvailable = selectedLocation.available > 0 && 
-                                          Math.random() > 0.3;
+                        // Randomly determine if a spot is available, but ensure some availability
+                        // matches the overall availability percentage of the location
+                        const availabilityRatio = selectedLocation.available / selectedLocation.total;
+                        const isAvailable = Math.random() < availabilityRatio;
+                        
                         return (
                           <div 
                             key={i} 

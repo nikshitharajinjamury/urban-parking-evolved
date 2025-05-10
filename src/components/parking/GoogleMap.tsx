@@ -22,7 +22,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   markers = [], 
   onMarkerClick, 
   selectedMarkerId,
-  center = { lat: 40.712776, lng: -74.005974 } // Default: NYC
+  center = { lat: 37.7749, lng: -122.4194 } // Default: San Francisco
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);
@@ -31,10 +31,16 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   
   // Initialize the map
   useEffect(() => {
+    // Make sure Google Maps API has loaded
+    if (!window.google || !window.google.maps) {
+      console.error("Google Maps API not loaded");
+      return;
+    }
+
     if (mapRef.current && !googleMapRef.current) {
       googleMapRef.current = new window.google.maps.Map(mapRef.current, {
         center,
-        zoom: 14,
+        zoom: 13,
         mapTypeControl: false,
         fullscreenControl: false,
         streetViewControl: false,
@@ -60,8 +66,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               lng: position.coords.longitude
             };
             setUserLocation(userPos);
-            // Only center on user location if explicitly requested
-            // Instead, we'll focus on our parking locations by default
             
             // Add user location marker
             new window.google.maps.Marker({
@@ -88,13 +92,15 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
   // Add or update markers on the map
   useEffect(() => {
-    if (!googleMapRef.current) return;
+    if (!googleMapRef.current || !window.google) return;
     
     // Clear existing markers
     markersRef.current.forEach((marker) => {
       marker.setMap(null);
     });
     markersRef.current.clear();
+    
+    console.log("Adding markers:", markers);
     
     // Add new markers
     markers.forEach((markerData) => {
