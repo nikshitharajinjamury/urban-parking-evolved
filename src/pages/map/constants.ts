@@ -1,3 +1,4 @@
+
 import { ParkingSpot, Service } from '@/types/parking';
 
 // Parking spot types and durations for selection
@@ -142,9 +143,9 @@ export const ADDITIONAL_SERVICES: Service[] = [
     price: 99,
     icon: 'oil'
   },
-  { id: 'fuel', name: 'Fuel Refill', price: 'Market Price', icon: 'fuel' },
+  { id: 'fuel', name: 'Fuel Refill', price: 0, icon: 'fuel' }, // Changed from 'Market Price' to 0
   { id: 'air', name: 'Tire Air Check', price: 50, icon: 'circle-check' },
-  { id: 'repair', name: 'Minor Repairs', price: 'Varies', icon: 'circle-help' },
+  { id: 'repair', name: 'Minor Repairs', price: 0, icon: 'circle-help' }, // Changed from 'Varies' to 0
 ];
 
 // Subscription plans
