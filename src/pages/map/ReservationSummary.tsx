@@ -1,26 +1,12 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { IndianRupee } from 'lucide-react';
 import { Car } from 'lucide-react';
-
-interface ParkingSpot {
-  id: string;
-  type: string;
-  price: number;
-  available: boolean;
-}
-
-interface Service {
-  id: string;
-  name: string;
-  price: number | string;
-  icon: string;
-}
+import { ParkingSpot, Service } from '@/types/parking';
 
 interface ReservationSummaryProps {
-  selectedSpot: string | null;
+  selectedSpot: ParkingSpot | null;
   spots: ParkingSpot[];
   date: Date | undefined;
   startTime: string;
@@ -54,7 +40,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-medium">Selected Spot: {selectedSpot}</h3>
+        <h3 className="font-medium">Selected Spot: {selectedSpot.name}</h3>
         <p className="text-sm text-muted-foreground">
           {date ? format(date, "dd MMM yyyy") : "No date selected"} - {startTime} ({duration} hours)
         </p>
@@ -65,7 +51,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           <span>Parking Fee</span>
           <span className="flex items-center">
             <IndianRupee className="h-3.5 w-3.5" />
-            {spots.find(s => s.id === selectedSpot)?.price * duration}
+            {spots.find(s => s.id === selectedSpot.id)?.price_per_hour * duration}
           </span>
         </div>
         

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -14,6 +13,7 @@ import {
   SPOT_TYPES, 
   ADDITIONAL_SERVICES 
 } from './map/constants';
+import { ParkingSpot } from '@/types/parking';
 
 const MapPage = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const MapPage = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [duration, setDuration] = useState(2);
   const [startTime, setStartTime] = useState('9:00 AM');
-  const [selectedSpot, setSelectedSpot] = useState<string | null>(null);
+  const [selectedSpot, setSelectedSpot] = useState<ParkingSpot | null>(null);
   const [additionalServices, setAdditionalServices] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'spots' | 'map'>('spots');
   const [tab, setTab] = useState('hourly');
@@ -32,11 +32,8 @@ const MapPage = () => {
     setSelectedLocation(location);
   };
 
-  const handleSelectSpot = (spotId: string) => {
-    const spot = PARKING_SPOTS.find(s => s.id === spotId);
-    if (spot && spot.available) {
-      setSelectedSpot(spotId);
-    }
+  const handleSpotSelect = (spot: ParkingSpot) => {
+    setSelectedSpot(spot);
   };
 
   const toggleService = (serviceId: string) => {
@@ -59,7 +56,7 @@ const MapPage = () => {
 
     toast({
       title: "Booking Successful!",
-      description: `You've reserved spot ${selectedSpot} for ${duration} hours.`,
+      description: `You've reserved spot ${selectedSpot.id} for ${duration} hours.`,
     });
 
     navigate('/reservations');
@@ -76,10 +73,7 @@ const MapPage = () => {
   const calculateTotal = () => {
     if (!selectedSpot) return 0;
     
-    const spot = PARKING_SPOTS.find(s => s.id === selectedSpot);
-    if (!spot) return 0;
-    
-    let total = spot.price * duration;
+    let total = selectedSpot.price_per_hour * duration;
     
     // Add costs of additional services
     additionalServices.forEach(serviceId => {
@@ -127,7 +121,7 @@ const MapPage = () => {
                 setDuration={setDuration}
                 spots={PARKING_SPOTS}
                 selectedSpot={selectedSpot}
-                handleSelectSpot={handleSelectSpot}
+                onSpotSelect={handleSpotSelect}
                 getSpotTypeColor={getSpotTypeColor}
               />
               
@@ -156,7 +150,6 @@ const MapPage = () => {
             duration={duration}
             additionalServices={additionalServices}
             calculateTotal={calculateTotal}
-            handleReservation={handleReservation}
             handleSubscribe={handleSubscribe}
             toggleService={toggleService}
           />

@@ -1,26 +1,19 @@
-
+import { ParkingSpot, Service, Booking, ParkingLocation } from '@/types/parking';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { IndianRupee } from 'lucide-react';
 
-interface ParkingSpot {
-  id: string;
-  type: string;
-  price: number;
-  available: boolean;
-}
-
 interface ParkingSpotGridProps {
   spots: ParkingSpot[];
-  selectedSpot: string | null;
-  handleSelectSpot: (spotId: string) => void;
+  selectedSpot: ParkingSpot | null;
+  onSpotSelect: (spot: ParkingSpot) => void;
   getSpotTypeColor: (type: string) => string;
 }
 
 const ParkingSpotGrid: React.FC<ParkingSpotGridProps> = ({ 
   spots, 
   selectedSpot, 
-  handleSelectSpot,
+  onSpotSelect,
   getSpotTypeColor 
 }) => {
   return (
@@ -32,15 +25,15 @@ const ParkingSpotGrid: React.FC<ParkingSpotGridProps> = ({
           className={`
             h-auto flex flex-col py-3 px-2
             ${!spot.available ? 'opacity-50 cursor-not-allowed' : ''}
-            ${selectedSpot === spot.id ? 'ring-2 ring-brand-purple' : ''}
+            ${selectedSpot === spot ? 'ring-2 ring-brand-purple' : ''}
             ${getSpotTypeColor(spot.type)}
           `}
           disabled={!spot.available}
-          onClick={() => handleSelectSpot(spot.id)}
+          onClick={() => onSpotSelect(spot)}
         >
           <span className="font-medium">{spot.id}</span>
           <span className="text-sm flex items-center">
-            <IndianRupee className="h-3 w-3" />{spot.price}/h
+            <IndianRupee className="h-3 w-3" />{spot.price_per_hour}/h
           </span>
         </Button>
       ))}

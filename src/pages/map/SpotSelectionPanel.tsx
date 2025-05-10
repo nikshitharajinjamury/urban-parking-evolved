@@ -1,16 +1,9 @@
-
 import React from 'react';
 import DateTimeSelection from './DateTimeSelection';
 import SpotTypeIndicator from './SpotTypeIndicator';
 import ParkingSpotGrid from './ParkingSpotGrid';
 import { DURATION_OPTIONS, SPOT_TYPES } from './constants';
-
-interface ParkingSpot {
-  id: string;
-  type: string;
-  price: number;
-  available: boolean;
-}
+import { ParkingSpot } from '@/types/parking';
 
 interface SpotSelectionPanelProps {
   date: Date | undefined;
@@ -20,8 +13,8 @@ interface SpotSelectionPanelProps {
   duration: number;
   setDuration: (duration: number) => void;
   spots: ParkingSpot[];
-  selectedSpot: string | null;
-  handleSelectSpot: (spotId: string) => void;
+  selectedSpot: ParkingSpot | null;
+  onSpotSelect: (spot: ParkingSpot) => void;
   getSpotTypeColor: (type: string) => string;
 }
 
@@ -34,9 +27,13 @@ const SpotSelectionPanel: React.FC<SpotSelectionPanelProps> = ({
   setDuration,
   spots,
   selectedSpot,
-  handleSelectSpot,
+  onSpotSelect,
   getSpotTypeColor
 }) => {
+  const handleSpotSelect = (spot: ParkingSpot) => {
+    onSpotSelect(spot);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -60,7 +57,7 @@ const SpotSelectionPanel: React.FC<SpotSelectionPanelProps> = ({
         <ParkingSpotGrid
           spots={spots}
           selectedSpot={selectedSpot}
-          handleSelectSpot={handleSelectSpot}
+          onSpotSelect={handleSpotSelect}
           getSpotTypeColor={getSpotTypeColor}
         />
       </div>

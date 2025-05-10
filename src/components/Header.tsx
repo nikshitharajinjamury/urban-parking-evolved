@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
   Menu, X, Car, User, CircleParking, CircleDollarSign, CircleHelp,
-  LogOut, Settings, Calendar
+  LogOut, Settings, Calendar, Wrench, CreditCard
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/contexts/AuthContext';
@@ -91,15 +90,21 @@ const Header = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/reservations">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        My Bookings
+                      <Link to="/services">
+                        <Wrench className="mr-2 h-4 w-4" />
+                        Services
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/settings">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
+                      <Link to="/subscriptions">
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Subscriptions
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/reservations">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        My Bookings
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -153,13 +158,17 @@ const Header = () => {
                   <User className="h-4 w-4" />
                   <span>Profile</span>
                 </Link>
+                <Link to="/services" className="flex items-center space-x-2 px-4 py-2 text-sm" onClick={toggleMenu}>
+                  <Wrench className="h-4 w-4" />
+                  <span>Services</span>
+                </Link>
+                <Link to="/subscriptions" className="flex items-center space-x-2 px-4 py-2 text-sm" onClick={toggleMenu}>
+                  <CreditCard className="h-4 w-4" />
+                  <span>Subscriptions</span>
+                </Link>
                 <Link to="/reservations" className="flex items-center space-x-2 px-4 py-2 text-sm" onClick={toggleMenu}>
                   <Calendar className="h-4 w-4" />
                   <span>My Bookings</span>
-                </Link>
-                <Link to="/settings" className="flex items-center space-x-2 px-4 py-2 text-sm" onClick={toggleMenu}>
-                  <Settings className="h-4 w-4" />
-                  <span>Settings</span>
                 </Link>
                 <Button onClick={handleSignOut} variant="destructive" className="w-full">
                   <LogOut className="mr-2 h-4 w-4" />

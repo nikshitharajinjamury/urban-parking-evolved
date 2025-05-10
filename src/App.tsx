@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,9 @@ import NotFound from "./pages/NotFound";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfilePage from "./pages/ProfilePage";
+import ServicesPage from "./pages/ServicesPage";
+import SubscriptionsPage from "./pages/SubscriptionsPage";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +47,9 @@ const App = () => (
                 
                 {/* Protected routes */}
                 <Route element={<ProtectedRoute />}>
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/subscriptions" element={<SubscriptionsPage />} />
                   <Route path="/reservations" element={<ReservationsPage />} />
                 </Route>
                 
