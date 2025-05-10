@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReservationSummary from './ReservationSummary';
 import SubscriptionPlans from './SubscriptionPlans';
@@ -55,6 +56,9 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
       startDate.setHours(startHour, parseInt(minutes));
       const endDate = new Date(startDate.getTime() + duration * 60 * 60 * 1000);
 
+      console.log('Selected spot:', selectedSpot);
+      console.log('Booking from', startDate, 'to', endDate);
+      
       // Check for existing bookings
       const { data: existingBookings, error: checkError } = await supabase
         .from('bookings')
@@ -63,12 +67,32 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         .eq('status', 'confirmed')
         .or(`start_time.lte.${endDate.toISOString()},end_time.gte.${startDate.toISOString()}`);
 
-      if (checkError) throw checkError;
+      if (checkError) {
+        console.error('Supabase check error:', checkError);
+        throw checkError;
+      }
 
       if (existingBookings && existingBookings.length > 0) {
         toast({
           title: "Slot Unavailable",
           description: "This parking slot is already booked for the selected time.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // First, verify that the slot exists in the parking_slots table
+      const { data: slotExists, error: slotCheckError } = await supabase
+        .from('parking_slots')
+        .select('id')
+        .eq('id', selectedSpot.id)
+        .single();
+        
+      if (slotCheckError || !slotExists) {
+        console.error('Slot does not exist in database:', selectedSpot.id);
+        toast({
+          title: "Invalid Parking Slot",
+          description: "The selected parking slot doesn't exist in our system. Please select another spot.",
           variant: "destructive",
         });
         return;
