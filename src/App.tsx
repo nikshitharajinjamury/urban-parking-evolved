@@ -26,6 +26,11 @@ import { initializeTestData } from "./lib/initData";
 
 const queryClient = new QueryClient();
 
+// Add Stripe public key to window object for global access
+if (typeof window !== 'undefined') {
+  window.STRIPE_PUBLIC_KEY = 'pk_test_51RECoGPd7yAFrHXYQQbnJcrLHCFwLNomcxso70EgPll9cAbqUmaHz8DMj9jWcnuj1O9FgFyHXkqCc7xocR8BItrT00UnJcpNzf';
+}
+
 const AppContent = () => {
   useEffect(() => {
     // Initialize test data in development mode

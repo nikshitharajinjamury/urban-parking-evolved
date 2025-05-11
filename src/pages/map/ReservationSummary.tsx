@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,10 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     );
   }
 
+  // Find the spot with current price from the spots array
+  const spotWithPrice = spots.find(s => s.id === selectedSpot.id);
+  const parkingFee = spotWithPrice ? spotWithPrice.price_per_hour * duration : 0;
+
   return (
     <div className="space-y-6">
       <div>
@@ -51,7 +56,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           <span>Parking Fee</span>
           <span className="flex items-center">
             <IndianRupee className="h-3.5 w-3.5" />
-            {spots.find(s => s.id === selectedSpot.id)?.price_per_hour * duration}
+            {parkingFee}
           </span>
         </div>
         
@@ -68,16 +73,10 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           </div>
         )}
         
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Service Fee</span>
-          <span className="flex items-center">
-            <IndianRupee className="h-3.5 w-3.5" />20
-          </span>
-        </div>
         <div className="flex justify-between font-bold text-lg pt-2">
           <span>Total</span>
           <span className="flex items-center">
-            <IndianRupee className="h-3.5 w-3.5" />{calculateTotal() + 20}
+            <IndianRupee className="h-3.5 w-3.5" />{calculateTotal()}
           </span>
         </div>
       </div>

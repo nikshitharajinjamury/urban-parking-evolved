@@ -67,4 +67,8 @@ export interface ParkingLocation {
   name: string;
   address: string;
   total_slots: number;
-} 
+}
+
+export interface StripeKeys {
+  publicKey: string;
+}

@@ -75,7 +75,8 @@ const MapPage = () => {
   
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
-    setViewMode('spots'); // Auto-switch to spots view when a location is selected
+    // Auto-switch to spots view when a location is selected
+    setViewMode('spots');
     
     // When a location is selected from the map, automatically populate some fields
     if (location.spotNames && location.spotNames.length > 0) {
@@ -128,7 +129,11 @@ const MapPage = () => {
   const calculateTotal = () => {
     if (!selectedSpot) return 0;
     
-    let total = selectedSpot.price_per_hour * duration;
+    // Find the spot with current price from the dynamic spots
+    const spotWithPrice = dynamicSpots.find(spot => spot.id === selectedSpot.id);
+    const parkingFee = spotWithPrice ? spotWithPrice.price_per_hour * duration : 0;
+    
+    let total = parkingFee;
     
     // Add costs of additional services
     additionalServices.forEach(serviceId => {
