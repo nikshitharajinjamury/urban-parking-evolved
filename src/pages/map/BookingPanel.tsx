@@ -81,82 +81,65 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         return;
       }
 
-      // First, verify that the slot exists in the parking_slots table
-      const { data: slotExists, error: slotCheckError } = await supabase
-        .from('parking_slots')
-        .select('id')
-        .eq('id', selectedSpot.id)
-        .single();
-        
-      if (slotCheckError) {
-        // If the slot doesn't exist in database, create a direct payment instead
-        console.log('Slot does not exist in database, creating direct payment');
-        
-        // Use the Stripe payment gateway
-        const stripePublicKey = 'pk_test_51RECoGPd7yAFrHXYQQbnJcrLHCFwLNomcxso70EgPll9cAbqUmaHz8DMj9jWcnuj1O9FgFyHXkqCc7xocR8BItrT00UnJcpNzf';
-        
-        // In a real implementation, we would redirect to Stripe Checkout here
-        // For now, let's simulate a successful payment
-        toast({
-          title: "Payment Processing",
-          description: "Redirecting to the payment page...",
-        });
-        
-        // Simulate redirect with a timeout
-        setTimeout(() => {
-          toast({
-            title: "Booking Successful!",
-            description: `You've reserved spot ${selectedSpot.name} for ${duration} hours.`,
-          });
-          navigate('/reservations');
-        }, 2000);
-        
-        return;
-      }
-
-      // Create the booking
-      const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
-        .insert({
-          user_id: user.id,
-          slot_id: selectedSpot.id,
-          start_time: startDate.toISOString(),
-          end_time: endDate.toISOString(),
-          status: 'confirmed',
-          total_amount: calculateTotal(),
-          payment_status: 'pending',
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
-
-      if (bookingError) {
-        console.error('Supabase booking error:', bookingError, bookingError.details, bookingError.message);
-        toast({
-          title: "Booking Failed",
-          description: bookingError.message || "Failed to make reservation. Please try again later.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Update slot status
-      const { error: slotError } = await supabase
-        .from('parking_slots')
-        .update({ 
-          status: 'occupied',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', selectedSpot.id);
-
-      if (slotError) throw slotError;
-
+      // Use window.STRIPE_PUBLIC_KEY directly
+      const stripePublicKey = window.STRIPE_PUBLIC_KEY || 'pk_test_51RECoGPd7yAFrHXYQQbnJcrLHCFwLNomcxso70EgPll9cAbqUmaHz8DMj9jWcnuj1O9FgFyHXkqCc7xocR8BItrT00UnJcpNzf';
+      
+      // Create a direct payment (simplified for this implementation)
+      const total = calculateTotal();
+      
+      // In a real implementation, we would create a Checkout Session with Stripe
+      // For now, let's simulate the process
       toast({
-        title: "Booking Successful!",
-        description: `You've reserved spot ${selectedSpot.name} for ${duration} hours.`,
+        title: "Payment Processing",
+        description: "Redirecting to the payment page...",
       });
+      
+      // Simulate redirect with a timeout - in a real app this would be a real redirect to Stripe
+      setTimeout(() => {
+        // Create the booking
+        try {
+          const createBooking = async () => {
+            const { data: booking, error: bookingError } = await supabase
+              .from('bookings')
+              .insert({
+                user_id: user.id,
+                slot_id: selectedSpot.id,
+                start_time: startDate.toISOString(),
+                end_time: endDate.toISOString(),
+                status: 'confirmed',
+                total_amount: total,
+                payment_status: 'completed', // Since we're simulating payment success
+                created_at: new Date().toISOString()
+              })
+              .select()
+              .single();
+    
+            if (bookingError) {
+              throw bookingError;
+            }
+            
+            return booking;
+          };
 
-      navigate('/reservations');
+          // Execute the booking creation
+          createBooking().then(() => {
+            toast({
+              title: "Booking Successful!",
+              description: `You've reserved spot ${selectedSpot.name} for ${duration} hours.`,
+            });
+            navigate('/reservations');
+          }).catch(error => {
+            console.error('Error creating booking:', error);
+            toast({
+              title: "Booking Failed",
+              description: "Failed to create booking record. Please try again.",
+              variant: "destructive",
+            });
+          });
+        } catch (error) {
+          console.error('Error in booking process:', error);
+        }
+      }, 2000);
     } catch (error) {
       console.error('Error making reservation:', error);
       toast({

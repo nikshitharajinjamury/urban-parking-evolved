@@ -60,19 +60,6 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           </span>
         </div>
         
-        {additionalServices.length > 0 && (
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Additional Services</span>
-            <span className="flex items-center">
-              <IndianRupee className="h-3.5 w-3.5" />
-              {additionalServices.reduce((total, serviceId) => {
-                const service = services.find(s => s.id === serviceId);
-                return total + (typeof service?.price === 'number' ? service.price : 0);
-              }, 0)}
-            </span>
-          </div>
-        )}
-        
         <div className="flex justify-between font-bold text-lg pt-2">
           <span>Total</span>
           <span className="flex items-center">

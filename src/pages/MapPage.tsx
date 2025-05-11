@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -133,17 +132,8 @@ const MapPage = () => {
     const spotWithPrice = dynamicSpots.find(spot => spot.id === selectedSpot.id);
     const parkingFee = spotWithPrice ? spotWithPrice.price_per_hour * duration : 0;
     
-    let total = parkingFee;
-    
-    // Add costs of additional services
-    additionalServices.forEach(serviceId => {
-      const service = ADDITIONAL_SERVICES.find(s => s.id === serviceId);
-      if (service && typeof service.price === 'number') {
-        total += service.price;
-      }
-    });
-    
-    return total;
+    // We're removing the additional service fees as requested
+    return parkingFee;
   };
 
   const getSpotTypeColor = (type: string) => {
