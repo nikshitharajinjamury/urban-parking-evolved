@@ -71,7 +71,7 @@ const MapPage = () => {
   
   // Get dynamically priced spots
   const dynamicSpots = getDynamicSpots();
-  
+
   const handleSelectLocation = (location: any) => {
     setSelectedLocation(location);
     // Auto-switch to spots view when a location is selected
@@ -125,15 +125,25 @@ const MapPage = () => {
     // In a real app, you would redirect to checkout or payment page
   };
 
+  // Updated calculateTotal function to properly show the parking fee
   const calculateTotal = () => {
     if (!selectedSpot) return 0;
     
     // Find the spot with current price from the dynamic spots
     const spotWithPrice = dynamicSpots.find(spot => spot.id === selectedSpot.id);
-    const parkingFee = spotWithPrice ? spotWithPrice.price_per_hour * duration : 0;
     
-    // We're removing the additional service fees as requested
-    return parkingFee;
+    // Ensure we have a valid price_per_hour before calculation
+    if (spotWithPrice && typeof spotWithPrice.price_per_hour === 'number') {
+      return spotWithPrice.price_per_hour * duration;
+    }
+    
+    // Fallback to the selectedSpot's price if it exists
+    if (typeof selectedSpot.price_per_hour === 'number') {
+      return selectedSpot.price_per_hour * duration;
+    }
+    
+    // Default fallback
+    return 0;
   };
 
   const getSpotTypeColor = (type: string) => {

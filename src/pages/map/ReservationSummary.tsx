@@ -38,9 +38,16 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     );
   }
 
-  // Find the spot with current price from the spots array
+  // Find the spot with current price from the spots array using proper type checking
   const spotWithPrice = spots.find(s => s.id === selectedSpot.id);
-  const parkingFee = spotWithPrice ? spotWithPrice.price_per_hour * duration : 0;
+  
+  // Make sure we have a valid price before calculation
+  const parkingFee = spotWithPrice && typeof spotWithPrice.price_per_hour === 'number' 
+    ? spotWithPrice.price_per_hour * duration 
+    : 0;
+
+  // Calculate total fee
+  const totalFee = parkingFee;
 
   return (
     <div className="space-y-6">
@@ -63,7 +70,8 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         <div className="flex justify-between font-bold text-lg pt-2">
           <span>Total</span>
           <span className="flex items-center">
-            <IndianRupee className="h-3.5 w-3.5" />{calculateTotal()}
+            <IndianRupee className="h-3.5 w-3.5" />
+            {totalFee}
           </span>
         </div>
       </div>

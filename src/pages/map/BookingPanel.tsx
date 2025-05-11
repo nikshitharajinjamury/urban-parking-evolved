@@ -81,22 +81,20 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         return;
       }
 
-      // Use window.STRIPE_PUBLIC_KEY directly
+      // Get stripe public key
       const stripePublicKey = window.STRIPE_PUBLIC_KEY || 'pk_test_51RECoGPd7yAFrHXYQQbnJcrLHCFwLNomcxso70EgPll9cAbqUmaHz8DMj9jWcnuj1O9FgFyHXkqCc7xocR8BItrT00UnJcpNzf';
       
-      // Create a direct payment (simplified for this implementation)
+      // Calculate total
       const total = calculateTotal();
       
-      // In a real implementation, we would create a Checkout Session with Stripe
-      // For now, let's simulate the process
+      // Show payment processing message
       toast({
         title: "Payment Processing",
         description: "Redirecting to the payment page...",
       });
       
-      // Simulate redirect with a timeout - in a real app this would be a real redirect to Stripe
+      // Simulate payment process and booking creation
       setTimeout(() => {
-        // Create the booking
         try {
           const createBooking = async () => {
             const { data: booking, error: bookingError } = await supabase
@@ -108,7 +106,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
                 end_time: endDate.toISOString(),
                 status: 'confirmed',
                 total_amount: total,
-                payment_status: 'completed', // Since we're simulating payment success
+                payment_status: 'completed',
                 created_at: new Date().toISOString()
               })
               .select()
@@ -138,6 +136,11 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
           });
         } catch (error) {
           console.error('Error in booking process:', error);
+          toast({
+            title: "Booking Failed",
+            description: "Failed to make reservation. Please try again later.",
+            variant: "destructive",
+          });
         }
       }, 2000);
     } catch (error) {
