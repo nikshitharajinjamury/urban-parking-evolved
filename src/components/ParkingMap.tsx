@@ -8,9 +8,10 @@ import { useToast } from '@/hooks/use-toast';
 
 interface ParkingMapProps {
   onSelectLocation?: (location: ParkingSpot) => void;
+  onViewSpots?: () => void;
 }
 
-const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
+const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation, onViewSpots }) => {
   const { toast } = useToast();
   const [selectedLocation, setSelectedLocation] = useState<ParkingSpot | null>(null);
   const [showSlots, setShowSlots] = useState(false);
@@ -39,6 +40,11 @@ const ParkingMap: React.FC<ParkingMapProps> = ({ onSelectLocation }) => {
         title: location.name,
         description: `${location.available} of ${location.total} parking spots available`,
       });
+      
+      // Switch to spots view after selecting a location
+      if (onViewSpots) {
+        onViewSpots();
+      }
     }
   };
   

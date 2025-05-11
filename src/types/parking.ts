@@ -1,3 +1,4 @@
+
 export interface ParkingSpot {
   id: string;
   name: string;
@@ -6,6 +7,7 @@ export interface ParkingSpot {
   status: 'available' | 'occupied' | 'maintenance';
   type: string;
   available: boolean;
+  dynamic_multiplier?: number;
 }
 
 export interface BookingPanelProps {

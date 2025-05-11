@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -61,7 +62,7 @@ const Header = () => {
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/map" className="nav-link">Find Parking</Link>
             {user && <Link to="/reservations" className="nav-link">My Booking</Link>}
-            <Link to="/pricing" className="nav-link">Pricing</Link>
+            {user && <Link to="/subscriptions" className="nav-link">Subscriptions</Link>}
             <Link to="/about" className="nav-link">About</Link>
             {user ? (
               <div className="ml-4 flex items-center gap-2">
@@ -140,7 +141,7 @@ const Header = () => {
             <Link to="/" className="nav-link" onClick={toggleMenu}>Home</Link>
             <Link to="/map" className="nav-link" onClick={toggleMenu}>Find Parking</Link>
             {user && <Link to="/reservations" className="nav-link" onClick={toggleMenu}>My Booking</Link>}
-            <Link to="/pricing" className="nav-link" onClick={toggleMenu}>Pricing</Link>
+            {user && <Link to="/subscriptions" className="nav-link" onClick={toggleMenu}>Subscriptions</Link>}
             <Link to="/about" className="nav-link" onClick={toggleMenu}>About</Link>
           </nav>
           <div className="flex flex-col space-y-2">

@@ -14,7 +14,6 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import DriverSignupPage from "./pages/DriverSignupPage";
 import ReservationsPage from "./pages/ReservationsPage";
-import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -47,7 +46,6 @@ const AppContent = () => {
           <Route path="/driver-signup" element={<DriverSignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/about" element={<AboutPage />} />
           
           {/* Protected routes */}
