@@ -64,8 +64,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         .from('bookings')
         .select('*')
         .eq('slot_id', selectedSpot.id)
-        .eq('status', 'confirmed')
-        .or(`start_time.lte.${endDate.toISOString()},end_time.gte.${startDate.toISOString()}`);
+        .eq('status', 'confirmed');
 
       if (checkError) {
         console.error('Supabase check error:', checkError);
@@ -94,46 +93,37 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
       });
       
       // Simulate payment process and booking creation
-      setTimeout(() => {
+      setTimeout(async () => {
         try {
-          const createBooking = async () => {
-            const { data: booking, error: bookingError } = await supabase
-              .from('bookings')
-              .insert({
-                user_id: user.id,
-                slot_id: selectedSpot.id,
-                start_time: startDate.toISOString(),
-                end_time: endDate.toISOString(),
-                status: 'confirmed',
-                total_amount: total,
-                payment_status: 'completed',
-                created_at: new Date().toISOString()
-              })
-              .select()
-              .single();
-    
-            if (bookingError) {
-              throw bookingError;
-            }
-            
-            return booking;
-          };
+          // Create the booking directly
+          const { data: booking, error: bookingError } = await supabase
+            .from('bookings')
+            .insert({
+              user_id: user.id,
+              slot_id: selectedSpot.id,
+              start_time: startDate.toISOString(),
+              end_time: endDate.toISOString(),
+              status: 'confirmed',
+              total_amount: total,
+              payment_status: 'completed'
+            })
+            .select();
 
-          // Execute the booking creation
-          createBooking().then(() => {
-            toast({
-              title: "Booking Successful!",
-              description: `You've reserved spot ${selectedSpot.name} for ${duration} hours.`,
-            });
-            navigate('/reservations');
-          }).catch(error => {
-            console.error('Error creating booking:', error);
+          if (bookingError) {
+            console.error('Booking creation error:', bookingError);
             toast({
               title: "Booking Failed",
               description: "Failed to create booking record. Please try again.",
               variant: "destructive",
             });
+            return;
+          }
+          
+          toast({
+            title: "Booking Successful!",
+            description: `You've reserved spot ${selectedSpot.name} for ${duration} hours.`,
           });
+          navigate('/reservations');
         } catch (error) {
           console.error('Error in booking process:', error);
           toast({

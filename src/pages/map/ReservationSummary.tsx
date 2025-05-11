@@ -32,7 +32,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   if (!selectedSpot) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        <Car className="w-16 h-16 mx-auto mb-4 opacity-20" />
+        <Car className="h-16 w-16 mx-auto mb-4 opacity-20" />
         <p>Select a parking spot to make a reservation</p>
       </div>
     );
@@ -45,9 +45,6 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   const parkingFee = spotWithPrice && typeof spotWithPrice.price_per_hour === 'number' 
     ? spotWithPrice.price_per_hour * duration 
     : 0;
-
-  // Calculate total fee
-  const totalFee = parkingFee;
 
   return (
     <div className="space-y-6">
@@ -71,7 +68,7 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           <span>Total</span>
           <span className="flex items-center">
             <IndianRupee className="h-3.5 w-3.5" />
-            {totalFee}
+            {parkingFee}
           </span>
         </div>
       </div>
