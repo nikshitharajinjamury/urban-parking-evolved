@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -51,16 +50,31 @@ const SignupPage = () => {
     }
     
     try {
-      await signUp(
+      const result = await signUp(
         formData.email, 
         formData.password, 
         formData.firstName, 
         formData.lastName
       );
-      navigate('/');
+      
+      // Check if there's an error in the result
+      if (result && 'error' in result && result.error) {
+        toast({
+          title: "Registration Error",
+          description: result.error.message || "An unknown error occurred",
+          variant: "destructive",
+        });
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       // Error is already handled in the signUp function
       console.error('Signup error:', error);
+      toast({
+        title: "Registration Error",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
     }
   };
 
@@ -70,6 +84,11 @@ const SignupPage = () => {
     } catch (error) {
       // Error is already handled in the signInWithGoogle function
       console.error('Google sign-in error:', error);
+      toast({
+        title: "Google Sign-in Error",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
     }
   };
 
