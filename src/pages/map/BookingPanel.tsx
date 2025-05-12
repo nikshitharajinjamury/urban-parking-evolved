@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReservationSummary from './ReservationSummary';
 import SubscriptionPlans from './SubscriptionPlans';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clock, CircleDollarSign } from 'lucide-react';
+import { Clock, CircleDollarSign, Loader2 } from 'lucide-react';
 import { ADDITIONAL_SERVICES, SUBSCRIPTION_PLANS, PARKING_SPOTS } from './constants';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -25,6 +25,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
 }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleReservation = async () => {
     if (!user) {
@@ -46,6 +47,8 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
     }
 
     try {
+      setIsProcessing(true);
+      
       // Parse and format the start time
       const [hours, minutes, period] = startTime.match(/(\d+):(\d+) (AM|PM)/).slice(1);
       let startHour = parseInt(hours);
@@ -59,7 +62,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
       console.log('Selected spot:', selectedSpot);
       console.log('Booking from', startDate, 'to', endDate);
       
-      // Check for existing bookings
+      // Check for existing bookings within the selected time range
       const { data: existingBookings, error: checkError } = await supabase
         .from('bookings')
         .select('*')
@@ -71,12 +74,26 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         throw checkError;
       }
 
-      if (existingBookings && existingBookings.length > 0) {
+      // Check for time overlaps manually
+      const hasOverlap = existingBookings && existingBookings.some(booking => {
+        const bookingStart = new Date(booking.start_time);
+        const bookingEnd = new Date(booking.end_time);
+        
+        // Check if there's any overlap in time ranges
+        return (
+          (startDate >= bookingStart && startDate < bookingEnd) || // New start time falls within existing booking
+          (endDate > bookingStart && endDate <= bookingEnd) || // New end time falls within existing booking
+          (startDate <= bookingStart && endDate >= bookingEnd) // New booking completely encompasses existing booking
+        );
+      });
+
+      if (hasOverlap) {
         toast({
           title: "Slot Unavailable",
           description: "This parking slot is already booked for the selected time.",
           variant: "destructive",
         });
+        setIsProcessing(false);
         return;
       }
 
@@ -89,7 +106,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
       // Show payment processing message
       toast({
         title: "Payment Processing",
-        description: "Redirecting to the payment page...",
+        description: "Processing your payment...",
       });
       
       // Simulate payment process and booking creation
@@ -105,7 +122,8 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
               end_time: endDate.toISOString(),
               status: 'confirmed',
               total_amount: total,
-              payment_status: 'completed'
+              payment_status: 'completed',
+              payment_intent_id: `pi_${Math.random().toString(36).substr(2, 9)}_${Date.now()}` // Mock payment ID
             })
             .select();
 
@@ -116,6 +134,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
               description: "Failed to create booking record. Please try again.",
               variant: "destructive",
             });
+            setIsProcessing(false);
             return;
           }
           
@@ -131,6 +150,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
             description: "Failed to make reservation. Please try again later.",
             variant: "destructive",
           });
+          setIsProcessing(false);
         }
       }, 2000);
     } catch (error) {
@@ -140,6 +160,7 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
         description: "Failed to make reservation. Please try again later.",
         variant: "destructive",
       });
+      setIsProcessing(false);
     }
   };
 
@@ -171,6 +192,15 @@ const BookingPanel: React.FC<BookingPanelProps> = ({
             calculateTotal={calculateTotal}
             handleReservation={handleReservation}
           />
+          
+          {isProcessing && (
+            <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
+              <div className="flex flex-col items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-brand-purple" />
+                <p className="mt-2">Processing payment...</p>
+              </div>
+            </div>
+          )}
         </div>
       </TabsContent>
       

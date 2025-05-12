@@ -46,6 +46,15 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     ? spotWithPrice.price_per_hour * duration 
     : 0;
 
+  // Get additional services fees
+  const servicesFee = additionalServices
+    .map(id => services.find(s => s.id === id))
+    .filter(Boolean)
+    .reduce((sum, service) => sum + (service?.price || 0), 0);
+
+  // Calculate total fee
+  const totalFee = parkingFee + servicesFee;
+
   return (
     <div className="space-y-6">
       <div>
@@ -64,17 +73,27 @@ const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           </span>
         </div>
         
+        {servicesFee > 0 && (
+          <div className="flex justify-between">
+            <span>Additional Services</span>
+            <span className="flex items-center">
+              <IndianRupee className="h-3.5 w-3.5" />
+              {servicesFee}
+            </span>
+          </div>
+        )}
+        
         <div className="flex justify-between font-bold text-lg pt-2">
           <span>Total</span>
           <span className="flex items-center">
             <IndianRupee className="h-3.5 w-3.5" />
-            {parkingFee}
+            {totalFee}
           </span>
         </div>
       </div>
       
       <Button className="w-full" size="lg" onClick={handleReservation}>
-        Reserve Now
+        Reserve Now - ₹{totalFee}
       </Button>
     </div>
   );
