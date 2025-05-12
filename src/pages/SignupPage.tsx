@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ const SignupPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { signUp, signInWithGoogle, user, isLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -49,6 +51,8 @@ const SignupPage = () => {
       return;
     }
     
+    setIsSubmitting(true);
+    
     try {
       const result = await signUp(
         formData.email, 
@@ -57,24 +61,31 @@ const SignupPage = () => {
         formData.lastName
       );
       
-      // Check if there's an error in the result
-      if (result && 'error' in result && result.error) {
+      if (result?.error) {
+        let errorMessage = result.error.message || "Sign up failed. Please try again.";
+        
+        // More user-friendly error messages
+        if (errorMessage.includes("Password should be")) {
+          errorMessage = "Password should be at least 6 characters long.";
+        } else if (errorMessage.includes("User already registered")) {
+          errorMessage = "This email is already registered. Please try logging in instead.";
+        }
+        
         toast({
           title: "Registration Error",
-          description: result.error.message || "An unknown error occurred",
+          description: errorMessage,
           variant: "destructive",
         });
-      } else {
-        navigate('/');
       }
-    } catch (error) {
-      // Error is already handled in the signUp function
+    } catch (error: any) {
       console.error('Signup error:', error);
       toast({
         title: "Registration Error",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
+        description: error.message || "An unknown error occurred",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -82,13 +93,7 @@ const SignupPage = () => {
     try {
       await signInWithGoogle();
     } catch (error) {
-      // Error is already handled in the signInWithGoogle function
       console.error('Google sign-in error:', error);
-      toast({
-        title: "Google Sign-in Error",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
-      });
     }
   };
 
@@ -174,7 +179,7 @@ const SignupPage = () => {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Password must be at least 8 characters long and include numbers and special characters.
+                Password must be at least 6 characters long.
               </p>
             </div>
 
@@ -195,8 +200,8 @@ const SignupPage = () => {
               </label>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Create account'}
+            <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
+              {isSubmitting || isLoading ? 'Creating account...' : 'Create account'}
             </Button>
           </form>
 

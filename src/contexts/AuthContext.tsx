@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
@@ -81,6 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
     setIsLoading(true);
     try {
+      // First, attempt to sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -97,27 +99,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error };
       }
 
-      // Create profile record
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user?.id,
-          first_name: firstName,
-          last_name: lastName,
+      if (data.user) {
+        // Auto sign in after signup
+        toast({
+          title: "Registration successful",
+          description: "Welcome to ParkSmart!",
         });
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-        setIsLoading(false);
-        return { error: profileError };
+        
+        // Navigate to home page
+        navigate("/");
       }
 
-      setUser(data.user);
       setIsLoading(false);
       return { user: data.user };
     } catch (error) {
       console.error('Signup error:', error);
       setIsLoading(false);
+      toast({
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
       return { error: error instanceof Error ? error : new Error('An unknown error occurred') };
     }
   };
